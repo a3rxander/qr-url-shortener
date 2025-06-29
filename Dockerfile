@@ -47,20 +47,20 @@ COPY ./src /var/www/
 #COPY ./config/php.ini /usr/local/etc/php/conf.d/
 
 # Copy existing application directory permissions
-#RUN chown -R www-data:www-data /var/www \
- #   && chmod -R 755 /var/www/storage \
- #   && chmod -R 755 /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 755 /var/www/storage \
+    && chmod -R 755 /var/www/bootstrap/cache
 
 # Install Composer dependencies
-#RUN composer install --optimize-autoloader --no-dev --no-interaction
+RUN composer install --optimize-autoloader --no-dev --no-interaction
 
 # Generate application key
-#RUN php artisan key:generate --no-interaction
+RUN php artisan key:generate --no-interaction
 
 # Cache configuration
-#RUN php artisan config:cache \
-  #  && php artisan route:cache \
-  #  && php artisan view:cache
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
 
 # Expose port 9000 and start supervisord
 EXPOSE 9000 
