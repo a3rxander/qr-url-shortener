@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: qr-url-shortener
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9000:80"
+    volumes:
+      - ./src:/var/www
+    networks:
+      - qr-network
+
+networks:
+  qr-network:
+    driver: bridge
+ 
