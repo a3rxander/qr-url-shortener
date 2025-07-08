@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomShortUrlRequest;
@@ -10,13 +10,17 @@ use Illuminate\Http\JsonResponse;
 
 class ShortUrlController extends Controller
 {
-    public function __construct(
-        private ShortUrlServiceInterface $shortUrlService
-    ) {}
+    protected $shortUrlService;
+
+    public function __construct(ShortUrlServiceInterface $shortUrlService)
+    {
+        $this->shortUrlService = $shortUrlService;
+    }
 
     public function store(StoreShortUrlRequest $request): JsonResponse
     {
-        try {
+        try { 
+ 
             $shortUrl = $this->shortUrlService->createShortUrl(
                 $request->validated()['original_url']
             );

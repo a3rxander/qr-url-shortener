@@ -14,13 +14,12 @@ class ShortUrlService implements ShortUrlServiceInterface
     ) {}
 
     public function createShortUrl(string $originalUrl, ?string $customAlias = null): ShortUrl
-    {
+    {  
         if ($customAlias && $this->repository->customAliasExists($customAlias)) {
             throw new \InvalidArgumentException('Custom alias already exists');
-        }
-
+        }  
         $code = $this->generateUniqueCode();
-
+ 
         return $this->repository->create([
             'code' => $code,
             'original_url' => $originalUrl,
@@ -47,11 +46,11 @@ class ShortUrlService implements ShortUrlServiceInterface
     }
 
     private function generateUniqueCode(): string
-    {
-        do {
-            $code = Str::random(6);
+    { 
+        do {  
+            $code = Str::random(6);  
         } while ($this->repository->codeExists($code));
-
+         
         return $code;
     }
 

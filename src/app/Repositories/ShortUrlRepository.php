@@ -34,7 +34,7 @@ class ShortUrlRepository implements ShortUrlRepositoryInterface
     }
 
     public function codeExists(string $code): bool
-    {
+    {  
         return $this->model->where('code', $code)->exists();
     }
 
