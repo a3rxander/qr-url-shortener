@@ -8,5 +8,4 @@ interface QrCodeRepositoryInterface
 {
     public function create(array $data): QrCode;
     public function findByIdentifier(string $identifier): ?QrCode;
-    public function identifierExists(string $identifier): bool;
 }

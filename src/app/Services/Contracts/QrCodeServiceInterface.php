@@ -11,8 +11,5 @@ interface QrCodeServiceInterface
         string $type = 'text',
         string $format = 'png',
         int $size = 300
-    ): QrCode;
-    
-    public function getQrCode(string $identifier): ?QrCode;
-    public function getQrCodeImage(string $identifier): ?string;
+    ); 
 }

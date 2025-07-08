@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQrCodeRequest;
@@ -10,21 +10,50 @@ use Symfony\Component\HttpFoundation\Response;
 
 class QrCodeController extends Controller
 {
-    public function __construct(
-        private QrCodeServiceInterface $qrCodeService
-    ) {}
+    protected $qrCodeService;
+
+    public function __construct(QrCodeServiceInterface $qrCodeService)
+    {
+        $this->qrCodeService = $qrCodeService;
+    } 
 
     public function generate(StoreQrCodeRequest $request): JsonResponse
     {
         try {
-            $validated = $request->validated();
-            
+            $validated = $request->validated(); 
             $qrCode = $this->qrCodeService->generateQrCode(
                 content: $validated['content'],
                 type: $validated['type'] ?? 'text',
                 format: $validated['format'] ?? 'png',
                 size: $validated['size'] ?? 300
             );
+
+            return response()->json([
+                'success' => true,
+                'data' => $qrCode,
+                'message' => 'QR code generated successfully'
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate QR code',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function show(string $identifier): JsonResponse
+    {
+        try {
+            $qrCode = $this->qrCodeService->findByIdentifier($identifier);
+            
+            if (!$qrCode) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'QR code not found'
+                ], 404);
+            }
 
             return response()->json([
                 'success' => true,
@@ -35,38 +64,17 @@ class QrCodeController extends Controller
                     'type' => $qrCode->type,
                     'format' => $qrCode->format,
                     'size' => $qrCode->size,
-                    'image_url' => $qrCode->image_url,
-                    'created_at' => $qrCode->created_at,
+                    'file_path' => $qrCode->file_path,
+                    'file_url' => Storage::disk('public')->url($qrCode->file_path),
+                    'created_at' => $qrCode->created_at
                 ]
-            ], 201);
+            ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to generate QR code'
+                'message' => 'Failed to retrieve QR code'
             ], 500);
         }
     }
-
-    public function getImage(string $identifier): Response
-    {
-        $qrCode = $this->qrCodeService->getQrCode($identifier);
-        
-        if (!$qrCode) {
-            abort(404, 'QR code not found');
-        }
-
-        $imageContent = $this->qrCodeService->getQrCodeImage($identifier);
-        
-        if (!$imageContent) {
-            abort(404, 'QR code image not found');
-        }
-
-        $mimeType = $qrCode->format === 'svg' ? 'image/svg+xml' : 'image/png';
-
-        return response($imageContent, 200, [
-            'Content-Type' => $mimeType,
-            'Cache-Control' => 'public, max-age=31536000', // 1 year
-        ]);
-    }
-}
+} 
