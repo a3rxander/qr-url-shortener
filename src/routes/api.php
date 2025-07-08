@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\QrCodeController;
-use App\Http\Controllers\Api\ShortUrlController;
+use App\Http\Controllers\QrCodeController;
+use App\Http\Controllers\ShortUrlController;
 
 
 Route::get('/user', function (Request $request) {
