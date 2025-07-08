@@ -44,7 +44,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY ./src /var/www/
 # Copy configuration files
 #COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-#COPY ./config/php.ini /usr/local/etc/php/conf.d/
+COPY ./php/php.ini /usr/local/etc/php/conf.d/
 
 # Copy existing application directory permissions
 RUN chown -R www-data:www-data /var/www \
